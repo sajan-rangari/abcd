@@ -1,16 +1,172 @@
-app.get('/listUsers',(req,res)=>{
-    res.json(users)
-})
+// CustomerService.ts
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { Customer } from '../models/customer';
+import { CUSTOMER } from '../models/customer-mock';
+import { map } from 'rxjs/operators';
 
-app.get('/showUser/:id',(req,res)=>{
-    if(users["user-"+req.params.id] != null)
-        res.json(users["user-"+req.params.id])
-    else
-        res.send("User is not found")
+@Injectable({
+  providedIn: 'root'
 })
+export class CustomerService {
+ 
+  c : Array<Customer> = CUSTOMER;
 
-app.delete('/deleteUser/:id',(req,res)=>{
-    delete users["user-"+req.params.id]
+  listAllVisibleCustomers() {
+    return this.c.filter((cu)=>cu.customerStatus);
+  }
+  
+  listAllInvisibleCustomers() {
+    return this.c.filter((cu)=>!cu.customerStatus);
+  }
+
+  viewCustomer(id:Number){
+    var cu : Customer;
+    this.c.forEach(function(cust){
+      if(cust.id == id) this.cu = cust;
+    })
+    return cu;
+  }
+
+//Fill your code here  
+}
+
+
+
+// Customer-list.component.ts
+
+import { Component, OnInit } from '@angular/core';
+import { CustomerService } from '../shared/service/customer.service';
+import { Customer } from '../shared/models/customer';
+import {CUSTOMER} from '../shared/models/customer-mock';
+import { Router } from '@angular/router';  
+
+@Component({
+  selector: 'app-customer-list',
+  templateUrl: './customer-list.component.html',
+  styleUrls: ['./customer-list.component.css']
 })
+export class CustomerListComponent implements OnInit {
+  cv : Array<Customer>
+  ci : Array<Customer>
+  constructor(private cservice:CustomerService) {}
+  ngOnInit() {
+    this.cv = this.cservice.listAllVisibleCustomers();
+    this.ci = this.cservice.listAllInvisibleCustomers();
+  }
 
-app.listen(app.get('port'))
+//Fill your code  
+
+}
+
+
+// Customer-list.component.html
+
+<div class="container>">
+    <h2 class="text-center" style="margin-top:30px;color: #e65c14;">List Customer</h2>
+    <section class="main-wrapper">
+        <div class="container">
+            <div class="customer-wrapper">
+                <div class="row-wrapper">
+                    <div *ngFor="let c of cv" id="visibileCustomer-{{c.id}}">
+                        <span id="cutomerId-{{c.id}}">CUS{{c.id}}</span>
+                        <h1 id="name-{{c.id}}">{{c.name}}</h1>
+                        <p id="email-{{c.id}}">{{c.email}}</p>
+                    </div>
+			<!-- Fill your code here -->
+			
+                    <div style="font-size: 18px;margin-left: 12px;color: #e65c14;">Invisible Customers</div>
+                    
+			<!-- Fill your code here -->
+                    
+                    
+            <div *ngFor="let c of cv" id="invisibileCustomer-{{c.id}}">
+                <span id="cutomerId-{{c.id}}">CUS{{c.id}}</span>
+                <h1 id="name-{{c.id}}">{{c.name}}</h1>
+                <p id="email-{{c.id}}">{{c.email}}</p>
+            </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+// Customer-show.component.ts
+
+import { Component, OnInit } from '@angular/core';
+import { CustomerService } from '../shared/service/customer.service';
+import { Customer } from '../shared/models/customer';
+import {CUSTOMER} from '../shared/models/customer-mock';
+import { ActivatedRoute, Router } from '@angular/router';
+@Component({
+  selector: 'app-customer-show',
+  templateUrl: './customer-show.component.html',
+  styleUrls: ['./customer-show.component.css']
+})
+export class CustomerShowComponent implements OnInit {
+  customer:Customer;
+  constructor(private activatedRoute:ActivatedRoute,private route:Router,private router:Router,private service:CustomerService) { 
+  }
+  ngOnInit() {
+    this.customer = this.service.viewCustomer(this.activatedRoute.snapshot.paramMap.get('id'));
+  }
+
+  goBack(){
+    this.activatedRoute.navigate(['customer','list'])
+  }
+  //Fill your code
+
+}
+
+
+// Customer-show.component.html
+
+
+<div class="container" >
+    <h2 class="text-center" style="margin-top:30px;color: #e65c14;">View Customer</h2>
+    <section class="main-wrapper" >
+        <div class="container">
+            <div class="view-details-wrapper">
+                <div class="view-label-value" >
+                    <div class="form-group">
+                        <label>Customer Id</label>
+                        <label id="customerId" class="label-value">CUS{{customer.id}}</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <label id="customerName" class="label-value">{{customer.name}}</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <label id="customerUsername" class="label-value">{{customer.username}}</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <label id="customerEmail" class="label-value">{{customer.email}}</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <label id="customerContactNumber" class="label-value">{{customer.contactNumber}}</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <label id="customerAddress" class="label-value">{{customer.address}}</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Status(Visible)</label>
+                        <label id="customerStatus" class="label-value">{{customer.customerStatus}}</label>
+                    </div>
+                    
+			<!-- Fill your code here -->
+                    
+                    <div class="btn-section">
+                        <button id="back" class="btn btn-primary" onclick="goBack()">Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
