@@ -1,0 +1,16 @@
+app.get('/listUsers',(req,res)=>{
+    res.json(users)
+})
+
+app.get('/showUser/:id',(req,res)=>{
+    if(users["user-"+req.params.id] != null)
+        res.json(users["user-"+req.params.id])
+    else
+        res.send("User is not found")
+})
+
+app.delete('/deleteUser/:id',(req,res)=>{
+    delete users["user-"+req.params.id]
+})
+
+app.listen(app.get('port'))
