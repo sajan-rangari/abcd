@@ -53,6 +53,49 @@ app.listen(app.get('port'))
 	</body>
 </html>
 
+service.ts
+
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { Question } from '../question';
+import { Data } from '../question.list';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class QuestionService {
+  question: Question[] = [];
+
+  constructor(private http: HttpClient) {}
+
+  getQuestion(id: number | string) {
+    //fill your code here
+    this.question = Data.filter((data) => data.id == id);
+    return this.question[0];
+  }
+
+  getQuestions(): Observable<Question[]> {
+    //fill your code here
+    return of(Data);
+  }
+
+  searchQuestions(term: string): Observable<Question[]> {
+    //fill your code here
+
+    if (term == '' || term == undefined) {
+      return of(Data);
+    } else {
+      this.question = [];
+      Data.filter((data) => {
+        if (data.name.toLowerCase().includes(term.toLowerCase())) {
+          this.question.push(data);
+        }
+      });
+      return of(this.question);
+    }
+  }
+}
 
 
 
