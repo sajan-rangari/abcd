@@ -1,0 +1,59 @@
+// app.js
+
+var express = require('express')
+var app = express()
+app.set('port', process.env.PORT || 3000)
+
+//fill your code
+
+app.get('/',(req,res)=>{
+    res.sendFile(__dirname+'/home.html')
+})
+
+app.get('/home',(req,res)=>{
+    res.sendFile(__dirname+'/index.html')
+})
+
+app.listen(app.get('port'))
+
+
+
+
+
+
+
+// index.html
+
+<html>
+    <body>
+        <span>Name:</span>
+        <input id="name" type="text">
+
+        <span>Age:</span>
+        <input id="age" type="text">
+        
+        <span>Nationality:</span>
+        <input id="nationality" type="text">
+
+        <button id="signUp">Sign Up</button>
+    <body>
+</html>
+
+
+
+
+
+
+// home.html
+
+<html>
+	<body>
+		<h1>Home</h1>
+		<button id="signUp"><a href="/home">Sign_Up</a></button>
+	</body>
+</html>
+
+
+
+
+
